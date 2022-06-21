@@ -14,7 +14,7 @@ function Header() {
   const provider = new GoogleAuthProvider();
 
   const [{ user }, dispatch] = useStateValue();
-  const [isMenu, setisMenu] = useState(false);
+  const [isMenu, setIsMenu] = useState(false);
 
   const login = async () => {
     if (!user) {
@@ -27,11 +27,11 @@ function Header() {
       });
       localStorage.setItem("user", JSON.stringify(providerData[0]));
     } else {
-      setisMenu(!isMenu);
+      setIsMenu(!isMenu);
     }
   };
   function logout() {
-    setisMenu(false);
+    setIsMenu(false);
     localStorage.clear();
 
     dispatch({
@@ -54,16 +54,28 @@ function Header() {
             exit={{ opacity: 0, x: 200 }}
             className="flex items-center gap-8 ml-auto"
           >
-            <li className="text-based text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer">
+            <li
+              className="text-based text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer"
+              onClick={() => setIsMenu(false)}
+            >
               Home
             </li>
-            <li className="text-based text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer">
+            <li
+              className="text-based text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer"
+              onClick={() => setIsMenu(false)}
+            >
               Menu
             </li>
-            <li className="text-based text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer">
+            <li
+              className="text-based text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer"
+              onClick={() => setIsMenu(false)}
+            >
               Service
             </li>
-            <li className="text-based text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer">
+            <li
+              className="text-based text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer"
+              onClick={() => setIsMenu(false)}
+            >
               About Us
             </li>
           </motion.ul>
@@ -88,9 +100,12 @@ function Header() {
                 exit={{ opacity: 0, scale: 0.6 }}
                 className="w-40 bg-gray-50 shadow-xl rounded-lg flex flex-col absolute top-12 right-0 "
               >
-                {user && user.email === "xxxxxxx@gmail.com" && (
+                {user && user.email === "turiesa23@gmail.com" && (
                   <Link to={"/createItem"}>
-                    <p className="px-4 py-2 flex item-center gap-3 cursor-pointer hover:bg-slate-100 transition-all duration-100 ease-in-out text-textColor text-base ">
+                    <p
+                      className="px-4 py-2 flex item-center gap-3 cursor-pointer hover:bg-slate-100 transition-all duration-100 ease-in-out text-textColor text-base "
+                      onClick={() => setIsMenu(false)}
+                    >
                       New Item <MdAdd />
                     </p>
                   </Link>
@@ -134,7 +149,7 @@ function Header() {
               exit={{ opacity: 0, scale: 0.6 }}
               className="w-40 bg-gray-50 shadow-xl rounded-lg flex flex-col absolute top-12 right-0 "
             >
-              {user && user.email === "turiesa23@gmail.com" && (
+              {user && user.email === "turie@gmail.com" && (
                 <Link to={"/createItem"}>
                   <p className="px-4 py-2 flex item-center gap-3 cursor-pointer hover:bg-slate-100 transition-all duration-100 ease-in-out text-textColor text-base ">
                     New Item <MdAdd />
