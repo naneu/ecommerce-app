@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { categories } from "../utils/data";
 import Loader from "./Loader";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import {
   MdFastfood,
   MdCloudUpload,
@@ -11,6 +11,10 @@ import {
   MdAttachMoney,
 } from "react-icons/md";
 import { storage } from "../firebase.config";
+import { getAllFoodItems, saveItems } from "../utils/firebaseFunctions";
+import { useStateValue } from "../context/StateProvider";
+import { actionType } from "../context/reducer";
+
 
 function CreateContainer() {
   const [title, setTitle] = useState("");
@@ -22,6 +26,8 @@ function CreateContainer() {
   const [alertStatus, setAlertStatus] = useState("danger");
   const [msg, setMsg] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [{ foodItems }, dispatch] = useStateValue();
 
   const uploadImage = (e) => {
     setIsLoading(true);
@@ -51,6 +57,7 @@ function CreateContainer() {
           setIsLoading(false);
           setFields(true);
           setMsg("Image uploaded successfully");
+          setAlertStatus("success");
           setTimeout(() => {
             setFields(false);
           }, 4000);
@@ -58,8 +65,81 @@ function CreateContainer() {
       }
     );
   };
-  const deleteImage = () => {};
-  const saveDetails = () => {};
+  const deleteImage = () => {
+    setIsLoading(true)
+    const deleteRef = ref(storage, imageAsset)
+    deleteObject(deleteRef).then(() => {
+      setImageAsset(null)
+      setIsLoading(false)
+      setFields(true)
+      setMsg("Image successfully deleted");
+      setAlertStatus("sucess");
+      setTimeout(() => {
+        setFields(false);
+      }, 4000);
+    });
+  }
+  const saveDetails = () => {
+    setIsLoading(true)
+    try {
+
+      if (!title || !calories || !imageAsset || !price || !category) {
+        setFields(true);
+        setMsg("Required fields can't be empty");
+        setAlertStatus("danger");
+        setTimeout(() => {
+          setFields(false);
+          setIsLoading(false);
+        }, 4000);
+      } else {
+        const data = {
+          id: `${Date.now()}`,
+          title: title,
+          imageUrl: imageAsset,
+          category: category,
+          calories: calories,
+          quantity: 1,
+          price: price
+        }
+        saveItems(data)
+        setIsLoading(false);
+        setFields(true);
+        setMsg("Data uploaded successfully");
+        setAlertStatus("success");
+        clearData()
+        setTimeout(() => {
+          setFields(false);
+        }, 4000);
+      }
+    } catch (error) {
+      console.log(error);
+      setFields(true);
+      setMsg("Error while uploading: try again");
+      setAlertStatus("danger");
+      setTimeout(() => {
+        setFields(false);
+        setIsLoading(false);
+      }, 4000);
+    }
+    fetchData()
+  };
+  const clearData = () => {
+    setTitle("title");
+    setImageAsset(null)
+    setCalories("")
+    setPrice("")
+    setCategory("Select Category")
+
+  }
+
+  const fetchData = async () => {
+    await getAllFoodItems().then(data => {
+      dispatch({
+        type: actionType.SET_FOOD_ITEMS,
+        foodItems: data,
+      })
+    })
+  }
   return (
     <div className="w-full min-h-screen flex items-center justify-center">
       <div className="w-[90%] md:w-[75%] border border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center gap-4">
@@ -68,11 +148,10 @@ function CreateContainer() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={`w-full p-2 rounded-lg text-center ${
-              alertStatus === "danger"
-                ? "bg-red-400 text-red-800"
-                : "bg-emerald-400 text-emerald-800"
-            }`}
+            className={`w-full p-2 rounded-lg text-center ${alertStatus === "danger"
+              ? "bg-red-400 text-red-800"
+              : "bg-emerald-400 text-emerald-800"
+              }`}
           >
             {msg}
           </motion.p>
