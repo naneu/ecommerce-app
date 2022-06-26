@@ -33,21 +33,16 @@ export const categories =[
     },
     {
         id:5,
-        name:"fruits",
-        urlParamName:"fruits"
-    },
-    {
-        id:6,
         name:"Curry",
         urlParamName:"curry"
     },
     {
-        id:7,
+        id:6,
         name:"Icecream",
         urlParamName:"Icecream"
     },
     {
-        id:8,
+        id:7,
         name:"Drinks",
         urlParamName:"drinks"
     },

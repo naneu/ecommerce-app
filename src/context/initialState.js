@@ -1,7 +1,10 @@
-import { fetchUser } from "../utils/ftechLocalStorageData";
+import { fetchCartItems, fetchUser } from "../utils/ftechLocalStorageData";
 
 const userInfo = fetchUser;
+const cartInfo = fetchCartItems;
 export const initialState = {
   user: userInfo,
-  foodItems: null
+  foodItems: null,
+  cartShow: false,
+  cartItems: cartInfo,
 };
